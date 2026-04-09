@@ -3,6 +3,8 @@ package hu.unideb.inf.roomshoppinglist;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
     ShoppingListDatabase shoppingListDatabase;
 
+    EditText newItemEditText;
+    TextView shoppingListTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,26 +34,27 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        newItemEditText = findViewById(R.id.newItemEditText);
+        shoppingListTextView = findViewById(R.id.shoppingListTextView);
+
         shoppingListDatabase = Room.databaseBuilder(this,
                         ShoppingListDatabase.class,
                         "shoppinglist_db")
                 .fallbackToDestructiveMigration(true)
                 .build();
-
-        new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ShoppingListItem sli = new ShoppingListItem();
-                        sli.setName("Apfel");
-                        shoppingListDatabase.shoppinglistDAO().insertListItem(sli);
-
-                        Log.d("CheckDB", shoppingListDatabase.shoppinglistDAO().getAllItems().toString());
-                    }
-                }
-        ).start();
     }
 
     public void addItem(View view) {
+        new Thread(
+                () -> {
+                    ShoppingListItem sli = new ShoppingListItem();
+                    sli.setName(newItemEditText.getText().toString());
+                    shoppingListDatabase.shoppinglistDAO().insertListItem(sli);
+
+                    String listText = shoppingListDatabase.shoppinglistDAO().getAllItems().toString();
+                    Log.d("CheckDB", listText);
+                    runOnUiThread(() -> shoppingListTextView.setText(listText));
+                }
+        ).start();
     }
 }
