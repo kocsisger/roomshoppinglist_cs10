@@ -7,8 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Room;
+
+import hu.unideb.inf.roomshoppinglist.model.ShoppingListDatabase;
 
 public class MainActivity extends AppCompatActivity {
+
+    ShoppingListDatabase shoppingListDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +25,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        shoppingListDatabase = Room.databaseBuilder(this,
+                        ShoppingListDatabase.class,
+                        "shoppinglist_db")
+                .fallbackToDestructiveMigration(true)
+                .build();
+
     }
 }
