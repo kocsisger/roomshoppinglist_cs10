@@ -1,6 +1,13 @@
 package hu.unideb.inf.roomshoppinglist.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "ShoppingList")
 public class ShoppingListItem {
+    @PrimaryKey
+    @NonNull
     int id;
     String name;
 
