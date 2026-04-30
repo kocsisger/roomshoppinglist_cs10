@@ -18,4 +18,7 @@ public interface ShoppinglistDAO {
 
     @Query("DELETE FROM ShoppingList")
     public void deleteDB();
+
+    @Delete
+    public void deleteListItem(ShoppingListItem sli);
 }

@@ -50,6 +50,10 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
             );
         }
 
+        public ShoppingListItem getItem(){
+            return data.get(getAbsoluteAdapterPosition());
+        }
+
         void setItem(ShoppingListItem sli){
             binding.itemNameTextView.setText(sli.getName());
         }

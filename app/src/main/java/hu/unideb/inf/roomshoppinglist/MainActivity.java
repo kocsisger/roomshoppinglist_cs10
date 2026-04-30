@@ -7,12 +7,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import java.util.List;
@@ -49,10 +52,28 @@ public class MainActivity extends AppCompatActivity {
 
         shoppingListDatabase.shoppinglistDAO().getAllItems().observe(
                 this,
-                shoppingListItems ->
-                                    binding.recyclerView.setAdapter(new ViewAdapter(shoppingListItems)
+                shoppingListItems -> binding.recyclerView.setAdapter(new ViewAdapter(shoppingListItems)
                 )
         );
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN|ItemTouchHelper.UP,
+                                                  ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                ShoppingListItem sli = ((ViewAdapter.ViewHolder)viewHolder).getItem();
+                new Thread(
+                        () -> shoppingListDatabase.shoppinglistDAO().deleteListItem(sli)
+                ).start();
+
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView);
     }
 
     public void addItem(View view) {
