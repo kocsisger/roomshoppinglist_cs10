@@ -43,6 +43,11 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = ItemLayoutBinding.bind(itemView);
+            itemView.setOnClickListener(view -> {
+                data.get(getAbsoluteAdapterPosition()).setName("Done");
+                notifyDataSetChanged();
+            }
+            );
         }
 
         void setItem(ShoppingListItem sli){

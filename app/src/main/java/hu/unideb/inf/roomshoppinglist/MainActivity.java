@@ -73,6 +73,5 @@ public class MainActivity extends AppCompatActivity {
         new Thread(
                 () -> shoppingListDatabase.shoppinglistDAO().deleteDB()
         ).start();
-
     }
 }
